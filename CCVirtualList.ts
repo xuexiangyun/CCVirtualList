@@ -236,11 +236,9 @@ export class CCVirtualList extends Component
     */
     public itemResetRect: (rect: VRect, index: number) => void
 
+
     /**
-     * 选中的索引
-     */
-    /**
-     * 设置数据数量
+     * 设置列表长度
      */
     set numItems(value: number)
     {
@@ -487,9 +485,7 @@ export class CCVirtualList extends Component
         this._onSizeChanged();
         this.node.on(Node.EventType.SIZE_CHANGED, this._onSizeChanged, this);
     }
-    //#endregion
 
-    //#region 触控相关
     private _onSizeChanged()
     {
         const contentSize = this.node.getComponent(UITransform)!.contentSize;
@@ -497,6 +493,9 @@ export class CCVirtualList extends Component
         this._containerOffset.set(this._container.position);
         this._drawRect.set(0, 0, contentSize.width, contentSize.height);
     }
+    //#endregion
+
+    //#region 触控相关
 
     private _cancelTouchEvent()
     {
@@ -780,7 +779,6 @@ export class CCVirtualList extends Component
 
     //#region  滚动相关
 
-    // 清除自动移动动画
     private _clearAutoMoveTween()
     {
         if (this._autoMoveTween)
@@ -790,7 +788,6 @@ export class CCVirtualList extends Component
         }
     }
 
-    // 清除移动惯性
     private _clearMovingInertia()
     {
         this._movingInertia.set(0, 0);
