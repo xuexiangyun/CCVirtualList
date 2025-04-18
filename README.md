@@ -9,21 +9,14 @@
 
 4.将制作的预制体cell，拖入预制体列表中（支持不同预制体）
 
-5. ` //cell渲染器 设置数量前必须设置此回调`
+5.`public cellRenderer: (index: number, cell: any) => void `
 
-     `public cellRenderer: (index: number, cell: any) => void `
-     
-     `//获取index对应cell的prefab`
+` public cellProvider: (index: number) => number;`
 
-     ` public cellProvider: (index: number) => number;`
-   
-     `//重置rect大小`
-   
-     `public cellResetRect: (rect: VRect, index: number) => void`
+`public cellResetRect: (rect: VRect, index: number) => void`
    
 提供了三个函数他们可以被`this.list.itemRenderer = this.onRenderCell.bind(this)`，绑定到自己逻辑脚本中
-
-7. 这时你可以对列表numItems 设置数量，这样就渲染出来了
+这时你可以对列表numItems 设置数量，这样就渲染出来了
 ## MARK
 1. 虚拟列表开启后不要关闭
 
@@ -37,6 +30,7 @@
 
 ### ！！！ 只在web端运行过， 未经过各平台校验，请自行斟酌！！！
 ## TODO
-[] 布局完善，减少计算量
-[] 优化update中计算量
+[ ] 布局完善，减少计算量
+
+[ ] 优化update中计算量
 
