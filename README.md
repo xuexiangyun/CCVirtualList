@@ -15,7 +15,7 @@
 
 `public cellResetRect: (rect: VRect, index: number) => void`
    
-提供了三个函数他们可以被`this.list.itemRenderer = this.onRenderCell.bind(this)`，绑定到自己逻辑脚本中
+提供了三个函数他们可以被`this.list.cellRenderer = this.onRenderCell.bind(this)`，绑定到自己逻辑脚本中
 这时你可以对列表numItems 设置数量，这样就渲染出来了
 ## MARK
 1. 虚拟列表开启后不要关闭
