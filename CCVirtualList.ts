@@ -190,7 +190,7 @@ export class CCVirtualList extends Component
     protected _cellAnimTime: number = 0.3;
 
     @property({ type: [Prefab], displayName: "预制体列表" })
-    protected itemPrefabs: Prefab[] = [];
+    protected cellPrefabs: Prefab[] = [];
 
     inertiaTime = ListConfig.inertiaTime;
     private _container: Node;
@@ -212,29 +212,29 @@ export class CCVirtualList extends Component
     private _showAnim: boolean = false
     private _isPlayed: boolean = false;
     /** 
-    * item渲染器 设置数量前必须设置此回调
+    * cell渲染器 设置数量前必须设置此回调
     * @param index 数据的索引
-    * @param item 对应的item对象
+    * @param cell 对应的cell对象
     * @tips 调用次数不可靠可能会很高 不要在此函数做复杂计算
     */
-    public itemRenderer: (index: number, item: any) => void
+    public cellRenderer: (index: number, cell: any) => void
 
     /**
-     * 获取index对应item的prefab
+     * 获取index对应cell的prefab
      * @param index 数据的索引
-     * @returns itemPrefabs中对应的item索引
+     * @returns cellPrefabs中对应的cell索引
      * @tips 调用次数不可靠可能会很高 不要在此函数做复杂计算
      */
-    public itemProvider: (index: number) => number;
+    public cellProvider: (index: number) => number;
 
 
     /**
-    * item 重置rect大小
+    * 重置rect大小
     * @param rect 对应的rect
     * @param index 数据的索引
     * @tips 调用次数不可靠可能会很高 不要在此函数做复杂计算
     */
-    public itemResetRect: (rect: VRect, index: number) => void
+    public cellResetRect: (rect: VRect, index: number) => void
 
 
     /**
@@ -242,9 +242,9 @@ export class CCVirtualList extends Component
      */
     set numItems(value: number)
     {
-        if (this.itemPrefabs.length == 0)
+        if (this.cellPrefabs.length == 0)
         {
-            throw console.error("Set itemPrefabs first!");
+            throw console.error("Set cellPrefabs first!");
         }
 
         if (value == null || value < 0)
@@ -252,9 +252,9 @@ export class CCVirtualList extends Component
             throw console.error('numItems error::', value);
         }
 
-        if (this.itemRenderer == null)
+        if (this.cellRenderer == null)
         {
-            throw console.error("Set itemRenderer first!");
+            throw console.error("Set cellRenderer first!");
         }
         this._showAnim = this.animationType !== ListAnimType.NONE;
         this._numItems = value;
@@ -331,7 +331,7 @@ export class CCVirtualList extends Component
             return null;
         }
 
-        if (index < 0 || index >= this.itemPrefabs.length)
+        if (index < 0 || index >= this.cellPrefabs.length)
         {
             console.error("Invalid prefab index:", index);
             return null;
@@ -429,13 +429,13 @@ export class CCVirtualList extends Component
         {
             const rect = this._rects[cellIndex];
             const node = rect && this._map.get(rect);
-            node && this.itemRenderer?.(cellIndex, node);
+            node && this.cellRenderer?.(cellIndex, node);
             return;
         }
 
         for (const [rect, node] of this._map)
         {
-            this.itemRenderer?.(rect.cellIndex, node);
+            this.cellRenderer?.(rect.cellIndex, node);
         }
     }
 
@@ -457,12 +457,12 @@ export class CCVirtualList extends Component
 
     private _initPools()
     {
-        if (this.itemPrefabs.length == 0)
+        if (this.cellPrefabs.length == 0)
         {
-            throw console.error("Set itemPrefabs first!");
+            throw console.error("Set cellPrefabs first!");
         }
 
-        for (let _ of this.itemPrefabs)
+        for (let _ of this.cellPrefabs)
         {
             this._pools.push(new NodePool());
         }
@@ -673,7 +673,7 @@ export class CCVirtualList extends Component
             }
             this._map.set(rect, node);
             this._map2.set(node, rect);
-            this.itemRenderer?.(i, node);
+            this.cellRenderer?.(i, node);
         }
     }
 
@@ -727,7 +727,7 @@ export class CCVirtualList extends Component
                         this._map2.set(node, rect);
 
                         let index = rect.cellIndex;
-                        this.itemRenderer && this.itemRenderer(index, node);
+                        this.cellRenderer && this.cellRenderer(index, node);
                     }
                 }
             }
@@ -742,10 +742,10 @@ export class CCVirtualList extends Component
 
     private _getNode(index: number): Node
     {
-        const prefabIndex = this.itemProvider ? this.itemProvider(index) : 0;
+        const prefabIndex = this.cellProvider ? this.cellProvider(index) : 0;
         const pool = this._pools[prefabIndex];
 
-        let node = pool.size() > 0 ? pool.get()! : instantiate(this.itemPrefabs[prefabIndex]);
+        let node = pool.size() > 0 ? pool.get()! : instantiate(this.cellPrefabs[prefabIndex]);
         if (this.selectedType == SelectedType.SINGLE && !node.hasEventListener(Button.EventType.CLICK, this._onSelectCell))
         {
             node.on(Button.EventType.CLICK, this._onSelectCell, this)
@@ -758,7 +758,7 @@ export class CCVirtualList extends Component
     private _putNode(index: number, node: Node)
     {
         node.active = false;
-        let prefabIndex = this.itemProvider ? this.itemProvider(index) : 0
+        let prefabIndex = this.cellProvider ? this.cellProvider(index) : 0
         this._pools[prefabIndex].put(node);
     }
 
@@ -885,7 +885,7 @@ export class CCVirtualList extends Component
             let rect = new VRect();
             rect.width = width;
             rect.height = height;
-            this.itemResetRect && this.itemResetRect(rect, i);
+            this.cellResetRect && this.cellResetRect(rect, i);
             rect.cellIndex = i;
             let xOffset = (this._drawRect.width - rect.width) / 2;
             rect.x = xOffset + rect.offsetX;
@@ -915,7 +915,7 @@ export class CCVirtualList extends Component
             let rect = new VRect();
             rect.width = width;
             rect.height = height;
-            this.itemResetRect && this.itemResetRect(rect, i);
+            this.cellResetRect && this.cellResetRect(rect, i);
             rect.cellIndex = i;
             let yOffset = (this._drawRect.height - rect.height) / 2;
             rect.x = xOffset + rect.offsetX;
@@ -950,7 +950,7 @@ export class CCVirtualList extends Component
             let rect = new VRect();
             rect.width = width;
             rect.height = height;
-            this.itemResetRect && this.itemResetRect(rect, i);
+            this.cellResetRect && this.cellResetRect(rect, i);
             rect.cellIndex = i;
             rect.x += rect.offsetX;
             rect.y += rect.offsetY;
@@ -1014,7 +1014,7 @@ export class CCVirtualList extends Component
             let rect = new VRect();
             rect.width = width;
             rect.height = height;
-            this.itemResetRect && this.itemResetRect(rect, i);
+            this.cellResetRect && this.cellResetRect(rect, i);
             rect.cellIndex = i;
             rect.x += rect.offsetX;
             rect.y += rect.offsetY;
