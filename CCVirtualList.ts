@@ -100,7 +100,7 @@ export class CCVirtualList extends Component
     static LIST_SCROLL_END_EVT: string = "list_scroll_end_evt" // 滚动结束事件
     static LIST_TOUCH_MOVE_BOTTOM_EVT: string = "list_touch_move_bottom_evt" // 触摸移动到底部事件
     static LIST_TOUCH_MOVE_TOP_EVT: string = "list_touch_move_top_evt" // 触摸移动到顶部事件
-    static LIST_ANIM_END: "list_anim_end"  // 动画结束事件
+    static LIST_ANIM_END: string = "list_anim_end"  // 动画结束事件
     //#endregion
 
     @property({ displayName: "虚拟列表" })
